@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatbot with OpenAI</title>
+  <style>
+    #chatbox {
+      width: 400px;
+      height: 300px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chatbot with OpenAI</h1>
+  <button id="startBtn">start</button>
+
+<!---------------- HTML -->
+
+
+  <div id="chatbox"></div>
+
+  <input hidden type="text" id="userInput" placeholder="Your message">
+  <button hidden id="myButton" onclick="sendMessage()">Send</button>
+  <button id="playBtn" onclick="play()">play</button>
+  <audio class="audio"></audio>
+
+<!-- -------------- -->
+
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+  <!-- <script src="https://code.responsivevoice.org/responsivevoice.js?key=1OLIwbwI"></script> -->
+  <script>
+    const startBtn = document.querySelector("#startBtn");
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = "ja";
+    recognition.interminResult = false;
+    recognition.maxAlternative = 1;
+
+    startBtn.addEventListener("click", () => {
+        recognition.start();
+    });
+
+    recognition.onresult = (e) => {
+
+        var stt = e.results[0][0].transcript;
+        var myButton = document.getElementById("myButton");
+
+        document.getElementById("userInput").value = stt;
+
+        function myButtonClickHandler() {
+        console.log(stt);
+        // Tambahkan aksi lain yang diinginkan di sini
+        }
+        var myEvent = new Event("click");
+        myButton.addEventListener("click", myButtonClickHandler);
+        myButton.dispatchEvent(myEvent);
+        
+    };
+
+
+
+
+
+
+
+  </script>
+  <script>
+    const chatboxElement = document.getElementById("chatbox");
+    const userInputElement = document.getElementById("userInput");
+
+    async function sendMessage() {
+      const userInput = userInputElement.value;
+      userInputElement.value = "";
+
+      // Menampilkan pesan pengguna di chatbox
+      appendMessage("You: " + userInput);
+
+      // Mengirim permintaan ke API OpenAI
+      const response = await axios.post("https://api.openai.com/v1/completions", {
+        model: "text-davinci-003",
+        prompt: `Kamu adalah AI asisten Hoshino AI buatan iru yang memiliki pengetahuan yang mendalam mengenai anime manga dan musik jepang.\nKetika mengobrol yang menyangkut jepang kamu selalu antusias. \nmanusia: ${userInput} \n AI:`,
+        temperature: 1,
+        max_tokens: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      }, {
+        headers: {
+          "Authorization": "Bearer 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"
+        }
+      });
+
+      // Mendapatkan respons chatbot dari API
+      const botResponse = response.data.choices[0].text.trim();
+      play(botResponse);
+
+      // Menampilkan respons chatbot di chatbox
+      appendMessage("Chatbot: " + botResponse);
+
+ 
+    //   responsiveVoice.speak(botResponse);
+     
+    }
+
+
+    function appendMessage(message) {
+      const messageElement = document.createElement("div");
+      messageElement.textContent = message;
+      chatboxElement.appendChild(messageElement);
+
+      // Menggulir chatbox ke bawah
+      chatboxElement.scrollTop = chatboxElement.scrollHeight;
+    }
+
+    
+
+    function play(botResponse) {
+        var speakerId = 6; // VOICEVOX:ずんだもん（あまあま）
+        var text = botResponse;
+        var ttsQuestApiKey = '' // optional
+        var audio = new TtsQuestV3Voicevox(speakerId, text, ttsQuestApiKey);
+        audio.play();
+    }
+  </script>
+  <script>
+    class TtsQuestV3Voicevox extends Audio {
+        constructor(speakerId, text, ttsQuestApiKey) {
+            super();
+            var params = {};
+            params['key'] = ttsQuestApiKey;
+            params['speaker'] = speakerId;
+            params['text'] = text;
+            const query = new URLSearchParams(params);
+            this.#main(this, query);
+        }
+        #main(owner, query) {
+            if (owner.src.length>0) return;
+            var apiUrl = 'https://api.tts.quest/v3/voicevox/synthesis';
+            fetch(apiUrl + '?' + query.toString())
+            .then(response => response.json())
+            .then(response => {
+            if (typeof response.retryAfter !== 'undefined') {
+                setTimeout(owner.#main, 1000*(1+response.retryAfter), owner, query);
+            }
+            else if (typeof response.mp3StreamingUrl !== 'undefined') {
+                owner.src = response.mp3StreamingUrl;
+            }
+            else if (typeof response.errorMessage !== 'undefined') {
+                throw new Error(response.errorMessage);
+            }
+            else {
+                throw new Error("serverError");
+            }
+            });
+        }
+        
+        }
+    
+    
+  </script>
+  
+</body>
+</html>
