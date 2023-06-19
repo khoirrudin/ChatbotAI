@@ -1,38 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chatbot with OpenAI</title>
-  <style>
-    #chatbox {
-      width: 400px;
-      height: 300px;
-      overflow-y: scroll;
-      border: 1px solid #ccc;
-      padding: 10px;
-    }
-  </style>
+  <title>AI会話</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="Aibot.png" type="image/x-icon">
+  
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&family=Tsukimi+Rounded:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Chatbot with OpenAI</h1>
-  <button id="startBtn">start</button>
+  <div class="container">
+    <div class="row justify-content-center align-items-center mt-4">
+      <div class="col-md-6 rounded rounded-5 p-3 bg">
+        <h1 class="text-center font">AI会話</h1>  
+        <div class="row justify-content-center align-items-center">
+          <div class="col-md-10 rounded rounded-5 border border-info bg-light p-2">
 
-<!---------------- HTML -->
+            <div class="" id="chatbox"></div>
+
+            <div class="row ">
+              <div style="text-align: center;" class="col-md-12 justify-content-center align-items-center">
+                <button style="margin: auto;"  class="btn btn-info rounded-pill px-5 py-2" id="startBtn"><i class="bi bi-mic-fill text-light"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input hidden type="text" id="userInput"  placeholder="Your message">
+        <button hidden id="myButton" onclick="sendMessage()">Send</button>
+        <button hidden id="playBtn" onclick="play()">play</button>
+        <audio class="audio"></audio>
+      </div>
+    </div>
+  </div>
 
 
-  <div id="chatbox"></div>
 
-  <input hidden type="text" id="userInput" placeholder="Your message">
-  <button hidden id="myButton" onclick="sendMessage()">Send</button>
-  <button id="playBtn" onclick="play()">play</button>
-  <audio class="audio"></audio>
-
-<!-- -------------- -->
+  
 
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+
+
+
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+
   <!-- <script src="https://code.responsivevoice.org/responsivevoice.js?key=1OLIwbwI"></script> -->
-  <script>
+<script>
     const startBtn = document.querySelector("#startBtn");
 
     const recognition = new webkitSpeechRecognition();
@@ -63,13 +90,10 @@
     };
 
 
+</script>
 
 
-
-
-
-  </script>
-  <script>
+<script>
     const chatboxElement = document.getElementById("chatbox");
     const userInputElement = document.getElementById("userInput");
 
@@ -78,12 +102,12 @@
       userInputElement.value = "";
 
       // Menampilkan pesan pengguna di chatbox
-      appendMessage("You: " + userInput);
+      appendMessage(userInput);
 
       // Mengirim permintaan ke API OpenAI
       const response = await axios.post("https://api.openai.com/v1/completions", {
         model: "text-davinci-003",
-        prompt: `Kamu adalah AI asisten Hoshino AI buatan iru yang memiliki pengetahuan yang mendalam mengenai anime manga dan musik jepang.\nKetika mengobrol yang menyangkut jepang kamu selalu antusias. \nmanusia: ${userInput} \n AI:`,
+        prompt: `Kamu adalah AI asisten AI会話 buatan いる yang memiliki pengetahuan yang mendalam mengenai anime manga dan musik jepang.\nKetika mengobrol yang menyangkut jepang kamu selalu antusias. \nmanusia: ${userInput} \n AI:`,
         temperature: 1,
         max_tokens: 256,
         top_p: 1,
@@ -100,7 +124,7 @@
       play(botResponse);
 
       // Menampilkan respons chatbot di chatbox
-      appendMessage("Chatbot: " + botResponse);
+      appendMessage2(botResponse);
 
  
     //   responsiveVoice.speak(botResponse);
@@ -110,8 +134,56 @@
 
     function appendMessage(message) {
       const messageElement = document.createElement("div");
-      messageElement.textContent = message;
+      const row = document.createElement("div");
+      const col10 = document.createElement("div");
+      const col2 = document.createElement("div");
+      
+
+      const imgElement = document.createElement('img');
+      imgElement.src = 'Aibotcat.png';
+
+
+      messageElement.classList.add('you');
+      row.classList.add('row');
+      col10.classList.add('col-md-8');
+      col2.classList.add('col-md-2');
+      
+
+      col10.textContent = message;
       chatboxElement.appendChild(messageElement);
+      messageElement.appendChild(row);
+      
+      row.appendChild(col10);
+      row.appendChild(col2);
+      col2.appendChild(imgElement);
+
+
+      // Menggulir chatbox ke bawah
+      chatboxElement.scrollTop = chatboxElement.scrollHeight;
+    }
+
+
+    function appendMessage2(message) {
+      const messageElement = document.createElement("div");
+      const row = document.createElement("div");
+      const col2 = document.createElement("div");
+      const col10 = document.createElement("div");
+
+      const imgElement = document.createElement('img');
+      imgElement.src = 'Aibot.png';
+
+
+      messageElement.classList.add('bot');
+      row.classList.add('row');
+      col2.classList.add('col-md-2');
+      col10.classList.add('col-md-8');
+
+      col10.textContent = message;
+      chatboxElement.appendChild(messageElement);
+      messageElement.appendChild(row);
+      row.appendChild(col2);
+      row.appendChild(col10);
+      col2.appendChild(imgElement);
 
       // Menggulir chatbox ke bawah
       chatboxElement.scrollTop = chatboxElement.scrollHeight;
@@ -126,8 +198,8 @@
         var audio = new TtsQuestV3Voicevox(speakerId, text, ttsQuestApiKey);
         audio.play();
     }
-  </script>
-  <script>
+</script>
+<script>
     class TtsQuestV3Voicevox extends Audio {
         constructor(speakerId, text, ttsQuestApiKey) {
             super();
@@ -162,7 +234,7 @@
         }
     
     
-  </script>
+</script>
   
 </body>
 </html>
