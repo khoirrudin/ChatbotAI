@@ -115,12 +115,14 @@ integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6
         presence_penalty: 0,
       }, {
         headers: {
-          "Authorization": "Bearer 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"
+          "Authorization": "Bearer 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"
         }
       });
 
       // Mendapatkan respons chatbot dari API
       const botResponse = response.data.choices[0].text.trim();
+
+      // menyalakan TTS
       play(botResponse);
 
       // Menampilkan respons chatbot di chatbox
@@ -234,6 +236,41 @@ integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6
         }
     
     
+</script>
+<script>
+  window.addEventListener('load', function() {
+    var message = "ようこそ、私の友人、私はあなたを助けることができますか?";
+    var speakerId = 6; // VOICEVOX:ずんだもん（あまあま）
+    var text = message;
+    var ttsQuestApiKey = '' // optional
+    var audio = new TtsQuestV3Voicevox(speakerId, text, ttsQuestApiKey);
+    
+
+    const messageElement = document.createElement("div");
+      const row = document.createElement("div");
+      const col2 = document.createElement("div");
+      const col10 = document.createElement("div");
+
+      const imgElement = document.createElement('img');
+      imgElement.src = 'Aibot.png';
+
+
+      messageElement.classList.add('bot');
+      row.classList.add('row');
+      col2.classList.add('col-md-2');
+      col10.classList.add('col-md-8');
+
+      col10.textContent = message;
+      chatboxElement.appendChild(messageElement);
+      messageElement.appendChild(row);
+      row.appendChild(col2);
+      row.appendChild(col10);
+      col2.appendChild(imgElement);
+
+      // Menggulir chatbox ke bawah
+      chatboxElement.scrollTop = chatboxElement.scrollHeight;
+      audio.play();
+});
 </script>
   
 </body>
